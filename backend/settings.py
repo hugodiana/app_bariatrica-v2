@@ -42,11 +42,17 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'dj_rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount', # Opcional, para login com redes sociais no futuro
+    'dj_rest_auth.registration',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,3 +147,12 @@ REST_FRAMEWORK = {
 # É um resquício de uma funcionalidade do Django para gerenciar múltiplos sites
 # em um único projeto. Para nós, basta definir como 1.
 SITE_ID = 1
+
+# settings.py
+AUTHENTICATION_BACKENDS = (
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Imprime os e-mails no console em vez de enviá-los de verdade
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

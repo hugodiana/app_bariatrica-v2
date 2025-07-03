@@ -7,7 +7,7 @@ class PerfilListCreate(generics.ListCreateAPIView):
     queryset = Perfil.objects.all()
     serializer_class = PerfilSerializer
 
-class MeuPerfilDetailView(generics.RetrieveAPIView):
+class MeuPerfilDetailView(generics.RetrieveUpdateAPIView):
     """
     Endpoint que retorna os detalhes do perfil do usuário atualmente autenticado.
     """

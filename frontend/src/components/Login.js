@@ -1,7 +1,7 @@
 // frontend/src/components/Login.js
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ function Login() {
     }
   };
 
-  return (
+return (
     <div>
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
@@ -75,10 +75,15 @@ function Login() {
             onChange={e => setPassword(e.target.value)}
           />
         </div>
-        {/* Mostra a mensagem de erro, se houver uma */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <button type="submit">Entrar</button>
       </form>
+
+      {/* PARTE IMPORTANTE - VERIFIQUE SE ESTÁ AQUI */}
+      <p>
+        Não tem uma conta? <Link to="/registro">Registre-se aqui</Link>.
+      </p>
+
     </div>
   );
 }
