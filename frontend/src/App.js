@@ -1,16 +1,14 @@
 // frontend/src/App.js
 
 import React from 'react';
-// 1. Garanta que 'Routes' e 'Route' estão sendo importados
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// 2. Garanta que todos os seus componentes de página estão sendo importados
+// Importação de todos os componentes de página
 import Login from './components/Login';
-import Dashboard from './components/Dashboard';
-import EditarPerfil from './components/EditarPerfil';
 import Registration from './components/Registration';
-import Acompanhamento from './components/Acompanhamento';
 import PainelPrincipal from './components/PainelPrincipal';
+import EditarPerfil from './components/EditarPerfil';
+import EditarRegistro from './components/EditarRegistro'; // Garanta que esta linha esteja SEM as chaves {}
 
 // Componente simples para a página inicial
 function PaginaInicial() {
@@ -21,17 +19,17 @@ function App() {
   return (
     <Router>
       <div>
-        {/* O <Routes> é o container para todas as rotas individuais */}
         <Routes>
-          {/* 3. Garanta que a rota para "/registro" existe aqui dentro */}
+          {/* Rotas Públicas */}
+          <Route path="/" element={<PaginaInicial />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registration />} />
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Acompanhamento />} />
+          {/* Rotas Privadas (após login) */}
           <Route path="/painel" element={<PainelPrincipal />} />
           <Route path="/editar-perfil" element={<EditarPerfil />} />
-          <Route path="/" element={<PaginaInicial />} />
-          <Route path="/dashboard" element={<Acompanhamento />} />         </Routes>
+          <Route path="/editar-registro/:id" element={<EditarRegistro />} />
+        </Routes>
       </div>
     </Router>
   );

@@ -15,4 +15,4 @@ class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         # fields = '__all__' # Mostra todos os campos
-        fields = ['id', 'usuario', 'data_cirurgia', 'peso_inicial', 'meta_peso']
+        fields = ['id', 'usuario', 'data_cirurgia', 'peso_inicial', 'meta_peso', 'altura_cm']
