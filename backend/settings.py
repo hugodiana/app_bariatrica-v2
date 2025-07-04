@@ -67,7 +67,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -157,3 +157,8 @@ AUTHENTICATION_BACKENDS = (
 
 # Imprime os e-mails no console em vez de enviá-los de verdade
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Exige que o usuário forneça um e-mail durante o registro
+ACCOUNT_EMAIL_REQUIRED = True
+# Define que a verificação de e-mail é opcional (podemos mudar para 'mandatory' no futuro)
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
