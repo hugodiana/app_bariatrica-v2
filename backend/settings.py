@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount', # Opcional, para login com redes sociais no futuro
     'dj_rest_auth.registration',
+    'acompanhamento',
 ]
 
 MIDDLEWARE = [

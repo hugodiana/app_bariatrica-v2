@@ -9,6 +9,8 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import EditarPerfil from './components/EditarPerfil';
 import Registration from './components/Registration';
+import Acompanhamento from './components/Acompanhamento';
+import PainelPrincipal from './components/PainelPrincipal';
 
 // Componente simples para a página inicial
 function PaginaInicial() {
@@ -25,10 +27,11 @@ function App() {
           <Route path="/registro" element={<Registration />} />
 
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Acompanhamento />} />
+          <Route path="/painel" element={<PainelPrincipal />} />
           <Route path="/editar-perfil" element={<EditarPerfil />} />
           <Route path="/" element={<PaginaInicial />} />
-        </Routes>
+          <Route path="/dashboard" element={<Acompanhamento />} />         </Routes>
       </div>
     </Router>
   );

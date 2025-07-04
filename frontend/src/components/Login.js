@@ -3,25 +3,30 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
+// Importando componentes do Material-UI
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import CssBaseline from '@mui/material/CssBaseline';
+
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // Estado para guardar mensagens de erro
+  const [error, setError] = useState('');
 
-  // Transformamos a função em 'async' para poder usar 'await'
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Impede o recarregamento da página
-    setError(''); // Limpa erros antigos
+    event.preventDefault();
+    setError('');
 
     try {
-      // Fazemos a requisição para o backend
       const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
-        method: 'POST', // O método para enviar dados
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Avisa que estamos enviando JSON
+          'Content-Type': 'application/json',
         },
-        // Converte nosso usuário e senha para o formato JSON
         body: JSON.stringify({
           username: username,
           password: password,
@@ -29,62 +34,80 @@ function Login() {
       });
 
       if (response.ok) {
-        // Se a resposta for bem-sucedida (status 2xx)
         const data = await response.json();
-        console.log('Login bem-sucedido:', data);
-
-        // Guarda o token no armazenamento local do navegador
-        localStorage.setItem('authToken', data.key); 
-
-        alert('Login realizado com sucesso!');
-        // No futuro, aqui nós redirecionaríamos o usuário para o painel principal
-        // window.location.href = '/dashboard'; 
-        navigate('/dashboard');
+        localStorage.setItem('authToken', data.key);
+        navigate('/painel'); // Redireciona para o nosso novo painel
       } else {
-        // Se o servidor responder com um erro (ex: credenciais erradas)
-        const errorData = await response.json();
-        console.error('Erro no login:', errorData);
         setError('Usuário ou senha inválidos. Tente novamente.');
       }
     } catch (err) {
-      // Se houver um erro na rede (ex: servidor desligado)
-      console.error('Erro de rede:', err);
       setError('Não foi possível conectar ao servidor.');
     }
   };
 
-return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Usuário:</label>
-          <input
-            type="text"
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          Login
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
             id="username"
+            label="Nome de Usuário"
+            name="username"
+            autoComplete="username"
+            autoFocus
             value={username}
             onChange={e => setUsername(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="password">Senha:</label>
-          <input
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Senha"
             type="password"
             id="password"
+            autoComplete="current-password"
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Entrar</button>
-      </form>
+          
+          {error && (
+            <Typography color="error" align="center" sx={{ mt: 2 }}>
+              {error}
+            </Typography>
+          )}
 
-      {/* PARTE IMPORTANTE - VERIFIQUE SE ESTÁ AQUI */}
-      <p>
-        Não tem uma conta? <Link to="/registro">Registre-se aqui</Link>.
-      </p>
-
-    </div>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Entrar
+          </Button>
+          
+          <Link to="/registro" style={{ textDecoration: 'none' }}>
+            <Typography align="center" variant="body2">
+              Não tem uma conta? Registre-se aqui
+            </Typography>
+          </Link>
+        </Box>
+      </Box>
+    </Container>
   );
 }
 
