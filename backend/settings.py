@@ -2,24 +2,27 @@
 
 from pathlib import Path
 import os
-import dj_database_url # Importe no topo
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# LEIA A SECRET_KEY DO AMBIENTE DO SERVIDOR
-# Em desenvolvimento, ele usará uma chave insegura qualquer.
+# --- CONFIGURAÇÕES DE PRODUÇÃO E SEGURANÇA ---
+
+# A Chave Secreta é lida da variável de ambiente em produção
 SECRET_KEY = os.environ.get(
     'SECRET_KEY', 
-    'django-insecure-fallback-key-for-development'
+    'django-insecure-fallback-key-for-development-do-not-use-in-production'
 )
 
-# O DEBUG SERÁ 'False' EM PRODUÇÃO
-# A variável 'RENDER' será definida automaticamente pelo servidor da Render.
+# O modo DEBUG será False em produção e True em desenvolvimento.
 DEBUG = 'RENDER' not in os.environ
 
-# ADICIONE O HOST DO SEU FUTURO SITE DE PRODUÇÃO
-ALLOWED_HOSTS = []
+# Hosts permitidos
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -33,10 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # Whitenoise para arquivos estáticos
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    
+    # Nossos apps
     'perfis',
+    'acompanhamento',
+
+    # Apps de terceiros
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -46,32 +53,41 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
-    'acompanhamento',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # Configuração do Whitenoise
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # Movido para cima para melhor prioridade
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ... (ROOT_URLCONF, TEMPLATES continuam iguais)
+ROOT_URLCONF = 'backend.urls'
 
-# ...
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Esta lógica usa o banco de dados PostgreSQL da Render em produção
-# e o nosso db.sqlite3 em desenvolvimento.
+# --- BANCO DE DADOS ---
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
@@ -79,31 +95,31 @@ DATABASES = {
     )
 }
 
-# ... (AUTH_PASSWORD_VALIDATORS, LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_TZ continuam iguais)
+# --- VALIDAÇÃO DE SENHA E INTERNACIONALIZAÇÃO ---
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'America/Sao_Paulo'
+USE_I18N = True
+USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# --- ARQUIVOS ESTÁTICOS ---
 STATIC_URL = 'static/'
-
-# Esta linha diz ao Django para colocar os arquivos estáticos coletados na pasta 'staticfiles'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# Habilita o armazenamento de arquivos estáticos do Whitenoise
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
+# --- CONFIGURAÇÕES PADRÃO E NOSSAS CONFIGURAÇÕES ESPECÍFICAS ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- NOSSAS CONFIGURAÇÕES ---
-
-# CorsHeaders - Permitir que o Vercel (onde nosso frontend estará) acesse a API
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
-# Em produção, vamos adicionar a URL do Vercel aqui através de variáveis de ambiente
+# CORREÇÃO PRINCIPAL: Lendo as URLs permitidas do ambiente
+CORS_ALLOWED_ORIGINS_STRING = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')
+CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_STRING.split(',')
 
 SITE_ID = 1
 
