@@ -1,6 +1,6 @@
 # acompanhamento/serializers.py
 from rest_framework import serializers
-from .models import RegistroDiario
+from .models import RegistroDiario, Refeicao
 
 class RegistroDiarioSerializer(serializers.ModelSerializer):
     # Pega o nome do usuário para exibir, em vez de apenas o ID
@@ -20,3 +20,8 @@ class RegistroDiarioSerializer(serializers.ModelSerializer):
         ]
         # Garante que o usuário não possa editar a data de um registro existente
         read_only_fields = ['data_registro']
+
+        class RefeicaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Refeicao
+        fields = ['id', 'registro_diario', 'tipo', 'descricao', 'horario']
