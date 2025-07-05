@@ -3,8 +3,9 @@
   base = "frontend"
   # Comando para construir o site
   command = "npm run build"
-  # Pasta que será publicada após o build
-  publish = "frontend/build"
+  # Pasta que será publicada (relativa ao diretório base)
+  # A CORREÇÃO ESTÁ AQUI:
+  publish = "build"
 
 [[redirects]]
   # Para qualquer rota que o navegador pedir...
