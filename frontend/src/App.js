@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // 2. Garanta que todos os seus componentes de página estão sendo importados
 import Login from './components/Login';
-import Dashboard from './components/Dashboard';
 import EditarPerfil from './components/EditarPerfil';
 import Registration from './components/Registration';
 import Acompanhamento from './components/Acompanhamento';
