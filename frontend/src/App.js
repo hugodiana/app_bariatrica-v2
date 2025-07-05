@@ -1,40 +1,73 @@
 // frontend/src/App.js
 
-import React from 'react';
-// 1. Garanta que 'Routes' e 'Route' estão sendo importados
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// 2. Garanta que todos os seus componentes de página estão sendo importados
+// Importando componentes do MUI para a notificação
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
+// Importação de todos os componentes de página
 import Login from './components/Login';
-import EditarPerfil from './components/EditarPerfil';
 import Registration from './components/Registration';
-import Acompanhamento from './components/Acompanhamento';
 import PainelPrincipal from './components/PainelPrincipal';
+import EditarPerfil from './components/EditarPerfil';
 import EditarRegistro from './components/EditarRegistro';
+import RequestPasswordReset from './components/RequestPasswordReset';
+import ConfirmPasswordReset from './components/ConfirmPasswordReset';
 
-// Componente simples para a página inicial
+
 function PaginaInicial() {
   return <h1>Bem-vindo à Aplicação!</h1>;
 }
 
 function App() {
+  // O sistema de notificações que estava faltando
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+
+  const handleNotification = (message, severity = 'success') => {
+    setNotification({ open: true, message, severity });
+  };
+
+  const handleCloseNotification = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setNotification({ ...notification, open: false });
+  };
+
   return (
     <Router>
       <div>
-        {/* O <Routes> é o container para todas as rotas individuais */}
         <Routes>
-          {/* 3. Garanta que a rota para "/registro" existe aqui dentro */}
-          <Route path="/registro" element={<Registration />} />
-
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Acompanhamento />} />
-          <Route path="/painel" element={<PainelPrincipal />} />
-          <Route path="/editar-perfil" element={<EditarPerfil />} />
+          {/* Todas as rotas agora recebem 'handleNotification' como uma prop */}
           <Route path="/" element={<PaginaInicial />} />
-          <Route path="/dashboard" element={<Acompanhamento />} />  
-          <Route path="/editar-registro/:id" element={<EditarRegistro />} />
+          <Route path="/login" element={<Login handleNotification={handleNotification} />} />
+          <Route path="/registro" element={<Registration handleNotification={handleNotification} />} />
+          <Route path="/recuperar-senha" element={<RequestPasswordReset handleNotification={handleNotification} />} />
+          <Route path="/password-reset-confirm/:uid/:token/" element={<ConfirmPasswordReset handleNotification={handleNotification} />} />
+
+          <Route path="/painel" element={<PainelPrincipal handleNotification={handleNotification} />} />
+          <Route path="/editar-perfil" element={<EditarPerfil handleNotification={handleNotification} />} />
+          <Route path="/editar-registro/:id" element={<EditarRegistro handleNotification={handleNotification} />} />
         </Routes>
       </div>
+
+      {/* O componente Snackbar que vai exibir as mensagens */}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000} // Fecha após 6 segundos
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseNotification} severity={notification.severity} sx={{ width: '100%' }}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </Router>
   );
 }
