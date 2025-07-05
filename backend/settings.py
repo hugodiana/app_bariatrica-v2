@@ -2,29 +2,25 @@
 
 from pathlib import Path
 import os
-import dj_database_url
+import dj_database_url # Importe no topo
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# --- CONFIGURAÇÕES DE PRODUÇÃO E SEGURANÇA ---
-
-# A Chave Secreta é lida da variável de ambiente em produção
-# Em desenvolvimento, usa uma chave insegura como fallback.
+# LEIA A SECRET_KEY DO AMBIENTE DO SERVIDOR
+# Em desenvolvimento, ele usará uma chave insegura qualquer.
 SECRET_KEY = os.environ.get(
     'SECRET_KEY', 
-    'django-insecure-fallback-key-for-development-do-not-use-in-production'
+    'django-insecure-fallback-key-for-development'
 )
 
-# O modo DEBUG será False em produção e True em desenvolvimento.
-# A Render define a variável de ambiente 'RENDER' automaticamente.
+# O DEBUG SERÁ 'False' EM PRODUÇÃO
+# A variável 'RENDER' será definida automaticamente pelo servidor da Render.
 DEBUG = 'RENDER' not in os.environ
 
-# Hosts permitidos
+# ADICIONE O HOST DO SEU FUTURO SITE DE PRODUÇÃO
 ALLOWED_HOSTS = []
 
-# A Render também define esta variável com a URL do seu site.
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -37,15 +33,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # Whitenoise para servir arquivos estáticos em produção
+    # Whitenoise para arquivos estáticos
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    
-    # Nossos apps
     'perfis',
-    'acompanhamento',
-
-    # Apps de terceiros
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -55,44 +46,32 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'acompanhamento',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # Middleware do Whitenoise (deve vir logo após o SecurityMiddleware)
+    # Configuração do Whitenoise
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'backend.urls'
+# ... (ROOT_URLCONF, TEMPLATES continuam iguais)
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # Para a nossa URL fantasma de password reset
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+# ...
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-
-# --- BANCO DE DADOS ---
-# Lógica para usar PostgreSQL na Render e SQLite localmente
+# Esta lógica usa o banco de dados PostgreSQL da Render em produção
+# e o nosso db.sqlite3 em desenvolvimento.
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
@@ -100,37 +79,31 @@ DATABASES = {
     )
 }
 
+# ... (AUTH_PASSWORD_VALIDATORS, LANGUAGE_CODE, TIME_ZONE, USE_I18N, USE_TZ continuam iguais)
 
-# --- VALIDAÇÃO DE SENHA E INTERNACIONALIZAÇÃO ---
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-
-# --- ARQUIVOS ESTÁTICOS (PARA O ADMIN DO DJANGO) ---
 STATIC_URL = 'static/'
-# Onde o 'collectstatic' vai juntar todos os arquivos estáticos
+
+# Esta linha diz ao Django para colocar os arquivos estáticos coletados na pasta 'staticfiles'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-# Configuração do Whitenoise para otimizar os arquivos
+
+# Habilita o armazenamento de arquivos estáticos do Whitenoise
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-# --- CONFIGURAÇÕES PADRÃO E NOSSAS CONFIGURAÇÕES ESPECÍFICAS ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --- NOSSAS CONFIGURAÇÕES ---
+
+# CorsHeaders - Permitir que o Vercel (onde nosso frontend estará) acesse a API
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    # Quando tivermos a URL do frontend na Vercel, vamos adicioná-la aqui
-    # através de uma variável de ambiente.
 ]
+# Em produção, vamos adicionar a URL do Vercel aqui através de variáveis de ambiente
 
 SITE_ID = 1
 

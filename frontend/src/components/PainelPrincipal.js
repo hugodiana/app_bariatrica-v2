@@ -1,7 +1,6 @@
 // frontend/src/components/PainelPrincipal.js
 
-// A CORREÇÃO ESTÁ AQUI: Juntamos todos os imports do React em uma única linha
-import React, { useState, useEffect, useCallback } from 'react'; 
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import GraficoPeso from './GraficoPeso';
 import GraficoAgua from './GraficoAgua';
@@ -36,8 +35,8 @@ function PainelPrincipal({ handleNotification }) {
         setLoading(true);
         try {
             const [perfilRes, registrosRes] = await Promise.all([
-                fetch('http://127.0.0.1:8000/api/meu-perfil/', { headers: { 'Authorization': `Token ${token}` } }),
-                fetch('http://127.0.0.1:8000/api/acompanhamento/registros/', { headers: { 'Authorization': `Token ${token}` } })
+                fetch(`${process.env.REACT_APP_API_URL}/api/meu-perfil/`, { headers: { 'Authorization': `Token ${token}` } }),
+                fetch(`${process.env.REACT_APP_API_URL}/api/acompanhamento/registros/`, { headers: { 'Authorization': `Token ${token}` } })
             ]);
             if (!perfilRes.ok || !registrosRes.ok) { throw new Error('Falha ao carregar dados.'); }
             const perfilData = await perfilRes.json();
@@ -62,7 +61,7 @@ function PainelPrincipal({ handleNotification }) {
         e.preventDefault();
         const token = localStorage.getItem('authToken');
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/acompanhamento/registros/', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}`}, body: JSON.stringify(formData) });
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/acompanhamento/registros/`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}`}, body: JSON.stringify(formData) });
             if (response.status === 201) {
                 handleNotification('Registro salvo com sucesso!', 'success');
                 setFormData({ peso: '', agua_ml: '', vitaminas_tomadas: false, observacoes: '' });
@@ -78,7 +77,7 @@ function PainelPrincipal({ handleNotification }) {
         if (window.confirm('Tem certeza?')) {
             const token = localStorage.getItem('authToken');
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/acompanhamento/registros/${registroId}/`, { method: 'DELETE', headers: { 'Authorization': `Token ${token}` } });
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/acompanhamento/registros/${registroId}/`, { method: 'DELETE', headers: { 'Authorization': `Token ${token}` } });
                 if (response.status === 204) {
                     handleNotification('Registro apagado.', 'info');
                     setRegistros(registros.filter(reg => reg.id !== registroId));
@@ -90,13 +89,8 @@ function PainelPrincipal({ handleNotification }) {
     let ultimoRegistroComPeso = registros.find(reg => reg.peso);
     let imc = null;
     let perdaTotal = null;
-    if (perfil && perfil.altura_cm && ultimoRegistroComPeso) {
-        const alturaMetros = perfil.altura_cm / 100;
-        imc = (ultimoRegistroComPeso.peso / (alturaMetros * alturaMetros)).toFixed(1);
-    }
-    if (perfil && perfil.peso_inicial && ultimoRegistroComPeso) {
-        perdaTotal = (perfil.peso_inicial - ultimoRegistroComPeso.peso).toFixed(1);
-    }
+    if (perfil && perfil.altura_cm && ultimoRegistroComPeso) { const alturaMetros = perfil.altura_cm / 100; imc = (ultimoRegistroComPeso.peso / (alturaMetros * alturaMetros)).toFixed(1); }
+    if (perfil && perfil.peso_inicial && ultimoRegistroComPeso) { perdaTotal = (perfil.peso_inicial - ultimoRegistroComPeso.peso).toFixed(1); }
 
     if (loading) return <div>Carregando...</div>;
 
@@ -105,6 +99,7 @@ function PainelPrincipal({ handleNotification }) {
             <CssBaseline />
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Grid container spacing={3}>
+                    {/* --- Coluna da Esquerda: Perfil --- */}
                     <Grid item xs={12} md={4}>
                         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                             {perfil && (
@@ -122,12 +117,14 @@ function PainelPrincipal({ handleNotification }) {
                             )}
                         </Paper>
                     </Grid>
+                    {/* --- Coluna da Direita: Gráficos --- */}
                     <Grid item xs={12} md={8}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}><Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 280 }}><Typography component="h3" variant="h6" color="primary">Evolução do Peso</Typography><GraficoPeso data={registros} /></Paper></Grid>
                             <Grid item xs={12}><Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 280 }}><Typography component="h3" variant="h6" color="primary">Consumo de Água</Typography><GraficoAgua data={registros} /></Paper></Grid>
                         </Grid>
                     </Grid>
+                    {/* --- Seção de Registro Diário --- */}
                     <Grid item xs={12}>
                         <Paper sx={{ p: 2 }}>
                             <Typography component="h2" variant="h6" color="primary" gutterBottom>Registro de Hoje</Typography>
@@ -142,6 +139,7 @@ function PainelPrincipal({ handleNotification }) {
                             </Box>
                         </Paper>
                     </Grid>
+                    {/* --- Seção do Histórico --- */}
                      <Grid item xs={12}>
                         <Typography component="h2" variant="h6" color="primary" gutterBottom>Histórico de Registros</Typography>
                         <List>
