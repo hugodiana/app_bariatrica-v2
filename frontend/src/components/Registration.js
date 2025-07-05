@@ -23,7 +23,8 @@ function Registration({ handleNotification }) {
       return;
     }
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/registration/', {
+      // CORREÇÃO AQUI
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/registration/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -48,24 +49,7 @@ function Registration({ handleNotification }) {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography component="h1" variant="h5">Registrar Nova Conta</Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}><TextField required fullWidth id="username" label="Nome de Usuário" name="username" autoComplete="username" onChange={handleChange} /></Grid>
-            <Grid item xs={12}><TextField required fullWidth id="email" label="Endereço de Email" name="email" autoComplete="email" onChange={handleChange} /></Grid>
-            <Grid item xs={12}><TextField required fullWidth name="password" label="Senha" type="password" id="password" onChange={handleChange} /></Grid>
-            <Grid item xs={12}><TextField required fullWidth name="password2" label="Confirmar Senha" type="password" id="password2" onChange={handleChange} /></Grid>
-          </Grid>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Registrar</Button>
-          <Link to="/login" style={{ textDecoration: 'none' }}>
-            <Typography align="center" variant="body2">Já tem uma conta? Faça login</Typography>
-          </Link>
-        </Box>
-      </Box>
-    </Container>
+    <Container component="main" maxWidth="xs"><CssBaseline /><Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}><Typography component="h1" variant="h5">Registrar Nova Conta</Typography><Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}><Grid container spacing={2}><Grid item xs={12}><TextField required fullWidth id="username" label="Nome de Usuário" name="username" autoComplete="username" onChange={handleChange} /></Grid><Grid item xs={12}><TextField required fullWidth id="email" label="Endereço de Email" name="email" autoComplete="email" onChange={handleChange} /></Grid><Grid item xs={12}><TextField required fullWidth name="password" label="Senha" type="password" id="password" onChange={handleChange} /></Grid><Grid item xs={12}><TextField required fullWidth name="password2" label="Confirmar Senha" type="password" id="password2" onChange={handleChange} /></Grid></Grid><Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Registrar</Button><Link to="/login" style={{ textDecoration: 'none' }}><Typography align="center" variant="body2">Já tem uma conta? Faça login</Typography></Link></Box></Box></Container>
   );
 }
 export default Registration;
