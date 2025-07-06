@@ -1,4 +1,5 @@
 # acompanhamento/views.py
+
 from rest_framework import viewsets, permissions
 from .models import RegistroDiario, Refeicao
 from .serializers import RegistroDiarioSerializer, RefeicaoSerializer
@@ -10,7 +11,6 @@ class RegistroDiarioViewSet(viewsets.ModelViewSet):
     próprios registros diários.
     """
     serializer_class = RegistroDiarioSerializer
-    # Garante que só usuários logados podem acessar esta API
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -24,17 +24,20 @@ class RegistroDiarioViewSet(viewsets.ModelViewSet):
         """
         Associa o novo registro ao usuário que fez a requisição.
         """
-        # Verifica se já existe um registro para hoje
         hoje = timezone.now().date()
-        if RegistroDiario.objects.filter(usuario=self.request.user, data_registro=hoje).exists():
-            # Idealmente, aqui você retornaria um erro claro para a API,
-            # mas por enquanto vamos apenas impedir a criação.
-            # O serializer cuidará da validação unique_together.
-            return
-
+        # Usamos get_or_create para evitar erro se já existir um registro hoje
+        # A validação final será feita pelo unique_together no modelo.
+        registro_diario, created = RegistroDiario.objects.get_or_create(
+            usuario=self.request.user, 
+            data_registro=hoje
+        )
         serializer.save(usuario=self.request.user, data_registro=hoje)
 
-        class RefeicaoViewSet(viewsets.ModelViewSet):
+# O erro estava na indentação da classe abaixo
+class RefeicaoViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint que permite aos usuários ver e editar suas refeições.
+    """
     serializer_class = RefeicaoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -47,7 +50,6 @@ class RegistroDiarioViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """
-
         Ao criar uma nova refeição, busca ou cria o registro diário
         para hoje e associa a refeição a ele.
         """
