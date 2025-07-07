@@ -110,6 +110,19 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+# --- NOVAS CONFIGURAÇÕES DO ALLAUTH ---
+# Define que o login será feito com o email
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+# Exige que o email seja preenchido no registro
 ACCOUNT_EMAIL_REQUIRED = True
+
+# Garante que o campo 'username' não é mais pedido
+ACCOUNT_USERNAME_REQUIRED = False
+
+# Mantemos a verificação de email como opcional por enquanto
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
+
+# Diz ao allauth para não usar o campo 'username'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
