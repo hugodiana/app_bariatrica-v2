@@ -92,15 +92,15 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORREÇÃO PRINCIPAL AQUI
-# Lendo as URLs permitidas do ambiente. Adicione a URL do seu site da Vercel na Render.
 CORS_ALLOWED_ORIGINS_STRING = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')
 CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_STRING.split(',')
 
 SITE_ID = 1
 
+# A CORREÇÃO ESTÁ AQUI, GARANTINDO QUE A LISTA SEJA FECHADA COM ']'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
@@ -110,8 +110,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-# Voltamos para a configuração que funcionava, mesmo com o aviso de 'deprecated'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
