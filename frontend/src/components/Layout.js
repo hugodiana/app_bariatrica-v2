@@ -1,51 +1,68 @@
 // frontend/src/components/Layout.js
-import React from 'react';
-import { Outlet } from 'react-router-dom'; // Importante para renderizar as páginas filhas
-import { Box, CssBaseline, Drawer, Toolbar, AppBar, Typography } from '@mui/material';
-import Sidebar from './Sidebar'; // Vamos criar este componente a seguir
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import { Box, CssBaseline, Drawer, Toolbar, useTheme, useMediaQuery } from '@mui/material';
+import Header from './Header'; // Importamos nosso novo cabeçalho
+import Sidebar from './Sidebar';
 
-const drawerWidth = 240; // Largura da barra lateral
+const drawerWidth = 240;
 
 function Layout() {
+  // Hook do MUI para pegar o tema atual e usar seus breakpoints
+  const theme = useTheme();
+  // Hook do MUI que retorna 'true' se a tela for do tamanho 'md' (médio) ou maior
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+  // Estado para controlar a abertura da sidebar no modo mobile
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      {/* Cabeçalho Superior */}
-      <AppBar
-        position="fixed"
-        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
-      >
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Meu Painel
-          </Typography>
-        </Toolbar>
-      </AppBar>
 
-      {/* Barra Lateral Fixa */}
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="permanent"
-        anchor="left"
+      {/* O Cabeçalho agora é nosso componente separado */}
+      <Header handleDrawerToggle={handleDrawerToggle} />
+
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        aria-label="mailbox folders"
       >
-        <Toolbar /> 
-        <Sidebar />
-      </Drawer>
+        {/* --- DRAWER PARA TELAS PEQUENAS (TEMPORÁRIO) --- */}
+        {/* Ele só é renderizado se a tela NÃO for 'md' ou maior */}
+        {!isMdUp && (
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{ keepMounted: true }} // Melhora a performance em mobile
+            sx={{
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+          >
+            <Sidebar />
+          </Drawer>
+        )}
+
+        {/* --- DRAWER PARA TELAS GRANDES (PERMANENTE) --- */}
+        {/* Ele só é renderizado se a tela for 'md' ou maior */}
+        {isMdUp && (
+          <Drawer variant="permanent" sx={{ '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth }}}>
+            <Sidebar />
+          </Drawer>
+        )}
+      </Box>
 
       {/* Área de Conteúdo Principal */}
       <Box
         component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+        sx={{ flexGrow: 1, p: 3, width: { md: `calc(100% - ${drawerWidth}px)` } }}
       >
-        <Toolbar /> 
-        {/* O Outlet é o espaço reservado onde as nossas páginas (Painel, Editar, etc.) serão renderizadas */}
+        <Toolbar /> {/* Espaçador para o conteúdo não ficar embaixo do header */}
         <Outlet />
       </Box>
     </Box>
