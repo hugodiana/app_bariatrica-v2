@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react'; // useCallback está sendo
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Dieta from './components/Dieta';
 
 // Importação dos componentes
 import Layout from './components/Layout';
@@ -52,7 +53,7 @@ function App() {
                 <Route path="editar-perfil" element={<EditarPerfil handleNotification={handleNotification} />} />
                 <Route path="editar-registro/:id" element={<EditarRegistro handleNotification={handleNotification} />} />
                 <Route path="agenda" element={<div>Página da Agenda em construção...</div>} />
-                <Route path="dieta" element={<div>Página da Dieta em construção...</div>} />
+                <Route path="dieta" element={<Dieta handleNotification={handleNotification} />} />
                 <Route path="progresso" element={<div>Página de Progresso em construção...</div>} />
                 <Route path="diario" element={<div>Página do Diário em construção...</div>} />
             </Route>
