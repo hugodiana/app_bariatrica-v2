@@ -2,8 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 // A MUDANÇA ESTÁ AQUI: Trocamos BrowserRouter por HashRouter
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'; 
-import Snackbar from '@mui/material/Snackbar';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 // Importação de todos os componentes de página
