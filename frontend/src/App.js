@@ -1,12 +1,11 @@
 // frontend/src/App.js
 
-import React, { useState, useCallback } from 'react'; // useCallback está sendo usado
+import React, { useState, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import Dieta from './components/Dieta';
 
-// Importação dos componentes
+// Importação de todos os componentes de página
 import Layout from './components/Layout';
 import Login from './components/Login';
 import Registration from './components/Registration';
@@ -15,15 +14,16 @@ import EditarPerfil from './components/EditarPerfil';
 import EditarRegistro from './components/EditarRegistro';
 import RequestPasswordReset from './components/RequestPasswordReset';
 import ConfirmPasswordReset from './components/ConfirmPasswordReset';
+import Agenda from './components/Agenda'; // Importação da Agenda
+import Dieta from './components/Dieta'; // Importação da Dieta
+import Progresso from './components/Progresso'; // Importação do Progresso
+import Diario from './components/Diario';
 
 function App() {
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
-
-  // A CORREÇÃO ESTÁ AQUI: Usamos o useCallback para estabilizar a função
   const handleNotification = useCallback((message, severity = 'success') => {
     setNotification({ open: true, message, severity });
-  }, []); // O array de dependências vazio garante que a função não seja recriada
-
+  }, []);
   const handleCloseNotification = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -52,10 +52,13 @@ function App() {
                 <Route path="painel" element={<PainelPrincipal handleNotification={handleNotification} />} />
                 <Route path="editar-perfil" element={<EditarPerfil handleNotification={handleNotification} />} />
                 <Route path="editar-registro/:id" element={<EditarRegistro handleNotification={handleNotification} />} />
-                <Route path="agenda" element={<div>Página da Agenda em construção...</div>} />
+                
+                {/* Rotas do Menu */}
+                <Route path="agenda" element={<Agenda handleNotification={handleNotification} />} />
                 <Route path="dieta" element={<Dieta handleNotification={handleNotification} />} />
-                <Route path="progresso" element={<div>Página de Progresso em construção...</div>} />
-                <Route path="diario" element={<div>Página do Diário em construção...</div>} />
+                <Route path="progresso" element={<Progresso handleNotification={handleNotification} />} />
+                
+                <Route path="diario" element={<Diario handleNotification={handleNotification} />} />
             </Route>
         </Routes>
     </Router>
