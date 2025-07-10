@@ -17,6 +17,7 @@ import ConfirmPasswordReset from './components/ConfirmPasswordReset';
 import Agenda from './components/Agenda';
 import Dieta from './components/Dieta';
 import Progresso from './components/Progresso';
+import Diario from './components/Diario';
 
 function App() {
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
@@ -54,7 +55,7 @@ function App() {
                 <Route path="agenda" element={<Agenda handleNotification={handleNotification} />} />
                 <Route path="dieta" element={<Dieta handleNotification={handleNotification} />} />
                 <Route path="progresso" element={<Progresso handleNotification={handleNotification} />} />
-                <Route path="diario" element={<div>Página do Diário em construção...</div>} />
+                <Route path="diario" element={<Diario handleNotification={handleNotification} />} />
             </Route>
         </Routes>
     </Router>

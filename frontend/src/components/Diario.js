@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// A CORREÇÃO ESTÁ AQUI: Adicionamos ListItemIcon à lista de imports
+// Importando componentes do Material-UI
 import {
     Box, Container, Paper, Typography, Button,
     TextField, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, CircularProgress
