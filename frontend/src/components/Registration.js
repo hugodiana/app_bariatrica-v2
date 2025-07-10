@@ -7,11 +7,16 @@ import { Button, TextField, Container, Box, Typography, CssBaseline, Grid } from
 function Registration({ handleNotification }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     password2: '',
   });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,31 +28,27 @@ function Registration({ handleNotification }) {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/registration/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // A CORREÇÃO ESTÁ AQUI: Enviamos 'password1' e 'password2'
         body: JSON.stringify({
-          username: formData.username,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
           email: formData.email,
-          password1: formData.password,
+          // Usamos o email como um username único para o Django
+          username: formData.email,
+          password: formData.password,
           password2: formData.password2,
         }),
       });
-
       if (response.status === 201) {
         handleNotification('Usuário registrado com sucesso! Por favor, faça o login.', 'success');
         navigate('/login');
       } else {
         const data = await response.json();
-        // Converte os erros do backend (que podem ser um array) em uma única string
         const errorMsg = Object.values(data).flat().join(' ');
         handleNotification(errorMsg || 'Falha ao registrar. Verifique os dados.', 'error');
       }
     } catch (err) {
       handleNotification('Erro de rede. Tente novamente.', 'error');
     }
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -57,8 +58,12 @@ function Registration({ handleNotification }) {
         <Typography component="h1" variant="h5">Registrar Nova Conta</Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField required fullWidth id="username" label="Nome de Usuário" name="username" autoComplete="username" onChange={handleChange} />
+            {/* Campos atualizados para Nome e Sobrenome */}
+            <Grid item xs={12} sm={6}>
+              <TextField required fullWidth id="firstName" label="Nome" name="firstName" autoComplete="given-name" onChange={handleChange} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField required fullWidth id="lastName" label="Sobrenome" name="lastName" autoComplete="family-name" onChange={handleChange} />
             </Grid>
             <Grid item xs={12}>
               <TextField required fullWidth id="email" label="Endereço de Email" name="email" autoComplete="email" onChange={handleChange} />

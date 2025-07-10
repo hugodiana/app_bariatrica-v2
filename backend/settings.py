@@ -126,3 +126,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 # Diz ao allauth para não usar o campo 'username'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+REST_AUTH = {
+    'REGISTER_SERIALIZER': 'perfis.serializers.CustomRegisterSerializer',
+}
