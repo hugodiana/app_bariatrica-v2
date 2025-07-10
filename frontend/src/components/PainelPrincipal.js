@@ -34,6 +34,11 @@ function PainelPrincipal({ handleNotification }) {
             const perfilData = await perfilRes.json();
             const registrosData = await registrosRes.json();
             const refeicoesData = await refeicoesRes.json();
+            if (!perfilData.peso_inicial || !perfilData.altura_cm) {
+                handleNotification('Bem-vindo(a)! Por favor, complete seu perfil para começar.', 'info');
+                navigate('/editar-perfil');
+                return; // Para a execução para não carregar o painel
+            }
             setPerfil(perfilData);
             setRegistros(registrosData);
             setRefeicoes(refeicoesData);

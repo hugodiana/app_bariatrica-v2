@@ -47,7 +47,23 @@ function EditarPerfil({ handleNotification }) {
     if (loading) return <div>Carregando...</div>;
 
     return (
-        <Container component="main" maxWidth="md"><CssBaseline /><Paper sx={{ p: 3, mt: 5 }}><Typography component="h1" variant="h5" gutterBottom>Editar Perfil</Typography><Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}><Grid container spacing={2}><Grid item xs={12}><TextField type="date" name="data_cirurgia" label="Data da Cirurgia" value={formData.data_cirurgia} onChange={handleChange} InputLabelProps={{ shrink: true }} fullWidth /></Grid><Grid item xs={12} sm={4}><TextField type="number" name="peso_inicial" label="Peso Inicial (kg)" value={formData.peso_inicial} onChange={handleChange} fullWidth /></Grid><Grid item xs={12} sm={4}><TextField type="number" name="altura_cm" label="Altura (cm)" value={formData.altura_cm} onChange={handleChange} fullWidth /></Grid><Grid item xs={12} sm={4}><TextField type="number" step="0.1" name="meta_peso" label="Meta de Peso (kg)" value={formData.meta_peso} onChange={handleChange} fullWidth /></Grid></Grid><Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}><Button variant="outlined" onClick={() => navigate('/painel')}>Cancelar</Button><Button type="submit" variant="contained">Salvar Alterações</Button></Box></Box></Paper></Container>
-    );
+    <Container component="main" maxWidth="md">
+        <CssBaseline />
+        <Paper sx={{ p: 3, mt: 5 }}>
+            <Typography component="h1" variant="h5">
+                Editar Perfil
+            </Typography>
+
+            {/* ADICIONE ESTA MENSAGEM DE BOAS-VINDAS */}
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+                Preencha seus dados iniciais para que o aplicativo possa calcular seu progresso e fornecer informações mais precisas.
+            </Typography>
+
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                {/* ... (o resto do seu formulário continua igual) ... */}
+            </Box>
+        </Paper>
+    </Container>
+);
 }
 export default EditarPerfil;
