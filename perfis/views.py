@@ -2,6 +2,8 @@
 from rest_framework import generics, permissions
 from .models import Perfil
 from .serializers import PerfilSerializer
+from dj_rest_auth.registration.views import RegisterView
+from rest_framework.permissions import AllowAny
 
 class PerfilListCreate(generics.ListCreateAPIView):
     queryset = Perfil.objects.all()
@@ -22,3 +24,9 @@ class MeuPerfilDetailView(generics.RetrieveUpdateAPIView):
         # seja novo e ainda não tenha um.
         obj, created = Perfil.objects.get_or_create(usuario=self.request.user)
         return obj
+    
+class PublicRegisterView(RegisterView):
+    # Permite acesso a qualquer um (mesmo não logado)
+    permission_classes = (AllowAny,)
+    # O mais importante: não tenta fazer nenhuma autenticação
+    authentication_classes = ()
