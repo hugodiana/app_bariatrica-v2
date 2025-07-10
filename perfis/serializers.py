@@ -1,25 +1,21 @@
 # perfis/serializers.py
 
+from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from dj_rest_auth.registration.serializers import RegisterSerializer
 from .models import Perfil
 
-# Serializer para exibir os dados do usuário dentro do perfil
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
-# Serializer para o modelo de Perfil
 class PerfilSerializer(serializers.ModelSerializer):
     usuario = UserSerializer(read_only=True)
-
     class Meta:
         model = Perfil
         fields = ['id', 'usuario', 'data_cirurgia', 'peso_inicial', 'meta_peso', 'altura_cm']
 
-# Serializer customizado para o registro
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True, max_length=30)
     last_name = serializers.CharField(required=True, max_length=30)
